@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PcJohncorp - Professional solar and electrical installation services. Powering future communities with electrical energy.">
+    <title>PcJohncorp - Solar & Electrical Installations</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo-section">
+                    <div class="logo-circle">
+                        <span class="logo-text">PJ</span>
+                    </div>
+                    <div class="logo-content">
+                        <h1 class="company-name">PcJohncorp</h1>
+                        <p class="tagline">Powering future communities with electrical energy.</p>
+                    </div>
+                </div>
+                <button class="btn-contact-nav" onclick="scrollToContact()">Contact Us</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Text Content on the left -->
+                <div class="hero-text-wrapper">
+                    <h2 class="hero-heading">Professional Solar, Electrical & Water Treatment Solutions</h2>
+                    <p class="hero-description">We provide safe, high-quality solar installations, electrical services, and water treatment solutions for homes and industries. Help you save money, improve efficiency, and ensure clean, reliable utilities for your property.</p>
+                    <button class="btn-primary" onclick="scrollToContact()">Get a Free Quote</button>
+                </div>
+                
+                <!-- Image Container on the right with dynamic transitions -->
+                <div class="hero-image-container">
+                    <div class="hero-image-background hero-image-slide active" style="background-image: url('Images/hero-solar-installation.webp');"></div>
+                    <div class="hero-image-background hero-image-slide hero-image-water" style="background-image: url('Images/hero-water-treatment.png');"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-heading">About Us</h2>
+            <p class="about-description">PcJohncorp is a leading provider of solar and electrical installation services, as well as water softener solutions, committed to delivering sustainable energy and water treatment solutions for homes and businesses. With years of experience and a team of certified professionals, we transform your energy and water needs into reliable, cost-effective solutions. Our mission is to empower communities through clean energy and quality water treatment while ensuring the highest standards of quality and safety.</p>
+            <div class="about-features">
+                <div class="feature-icon">
+                    <div class="icon-circle">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <p>Solar Solutions</p>
+                </div>
+                <div class="feature-icon">
+                    <div class="icon-circle">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <p>Electrical Services</p>
+                </div>
+                <div class="feature-icon">
+                    <div class="icon-circle">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"></path>
+                        </svg>
+                    </div>
+                    <p>Water Softener Solutions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="statistics">
+        <div class="container">
+            <h2 class="section-heading">Our Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Projects Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-number" data-target="10">0</div>
+                    <div class="stat-label">Years of Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-number" data-target="1000">0</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-number" data-target="2.5">0</div>
+                    <div class="stat-label">Million kWh Energy Saved</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-heading">Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image service-image-1"></div>
+                    <div class="service-content">
+                        <h3 class="service-title">Solar Energy Solutions</h3>
+                        <p class="service-description">Transform your property with our comprehensive solar panel installation services. We design and install custom solar systems that maximize energy efficiency and reduce your electricity bills. From residential rooftops to commercial installations, we deliver sustainable energy solutions tailored to your needs.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image service-image-water"></div>
+                    <div class="service-content">
+                        <h3 class="service-title">Water Softener Solutions</h3>
+                        <p class="service-description">Transform your home's water quality with our premium water softener installation services. As an authorized independent dealer of PURONICS Water Products, we provide EPA-registered, certified water treatment systems that eliminate hard water issues, protect your appliances, and improve your family's health. From whole-house systems to point-of-use solutions, we deliver clean, soft water throughout your home.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image service-image-2"></div>
+                    <div class="service-content">
+                        <h3 class="service-title">Electrical Installation & Maintenance</h3>
+                        <p class="service-description">Professional electrical services for all your needs. Our certified electricians handle everything from new installations to system upgrades and routine maintenance. We ensure your electrical systems are safe, efficient, and up to code, providing peace of mind for your home or business.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary services-btn" onclick="scrollToContact()">Request a Free Consultation</button>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose">
+        <div class="container">
+            <div class="why-choose-content">
+                <div class="why-choose-left">
+                    <div class="why-choose-banner">WHY CHOOSE PCJOHNCORP</div>
+                    <h2 class="why-choose-heading">Why Choose PcJohncorp for Your Energy & Water Solutions</h2>
+                    <p class="why-choose-intro">PcJohncorp is a leading provider of solar and electrical installation services, as well as water softener solutions, committed to delivering sustainable energy and water treatment solutions for homes and businesses. With years of experience and a team of certified professionals, we transform your energy and water needs into reliable, cost-effective solutions.</p>
+                    
+                    <div class="why-choose-features">
+                        <div class="why-choose-feature">
+                            <div class="why-choose-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="why-choose-feature-content">
+                                <h3 class="why-choose-feature-title">Certified Professionals</h3>
+                                <p class="why-choose-feature-description">All our technicians are fully licensed, insured, and certified. We maintain the highest industry standards and stay updated with the latest technologies and best practices.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="why-choose-feature">
+                            <div class="why-choose-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 7h-4M4 7h4m12 0v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7m12 0V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2"></path>
+                                </svg>
+                            </div>
+                            <div class="why-choose-feature-content">
+                                <h3 class="why-choose-feature-title">Quality Materials</h3>
+                                <p class="why-choose-feature-description">We use only premium-grade materials and equipment from trusted manufacturers, ensuring durability and long-term performance of your installations.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="why-choose-feature">
+                            <div class="why-choose-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="why-choose-feature-content">
+                                <h3 class="why-choose-feature-title">Fast Installation</h3>
+                                <p class="why-choose-feature-description">Efficient project management and skilled installation teams ensure your project is completed on time and with minimal disruption to your daily operations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="why-choose-right">
+                    <div class="why-choose-image" style="background-image: url('Images/why-choose-image.png');"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-heading">How It Works</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Consultation</h3>
+                    <p class="step-description">We start with a free consultation to understand your energy needs, assess your property, and discuss your goals and budget.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Site Assessment</h3>
+                    <p class="step-description">Our experts conduct a thorough site evaluation to determine the best installation approach and create a customized system design.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Installation</h3>
+                    <p class="step-description">Our skilled team performs the installation with precision and care, ensuring everything is properly configured and tested for optimal performance.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">Maintenance</h3>
+                    <p class="step-description">We provide ongoing maintenance and support services to ensure your system continues to operate efficiently for years to come.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio/Gallery Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <h2 class="section-heading">Our Recent Projects</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" onclick="openLightbox(0)">
+                    <div class="portfolio-image portfolio-img-1"></div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-type">Residential</span>
+                        <p class="portfolio-desc">Modern home solar installation</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" onclick="openLightbox(1)">
+                    <div class="portfolio-image portfolio-img-2"></div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-type">Commercial</span>
+                        <p class="portfolio-desc">Office building solar array</p>
+                    </div>
+                </div>
+                <div class="portfolio-item" onclick="openLightbox(2)">
+                    <div class="portfolio-image portfolio-img-4"></div>
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-type">Commercial</span>
+                        <p class="portfolio-desc">Warehouse solar installation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Project Image">
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-heading section-heading-white">What Our Customers say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/150?img=1" alt="Rachael Charles">
+                    </div>
+                    <h4 class="testimonial-name">Rachael Charles</h4>
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">"PcJohncorp installed an amazing water softener system in our home. The water quality has improved dramatically, and we no longer have issues with hard water stains. The installation was quick and professional. Highly recommend their water treatment services!"</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Mary Jane">
+                    </div>
+                    <h4 class="testimonial-name">Mary Jane</h4>
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">"Outstanding service from start to finish! The installation was completed on time, and the team explained everything clearly. Our business now runs on clean, renewable energy."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Musa Ali">
+                    </div>
+                    <h4 class="testimonial-name">Musa Ali</h4>
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">"Professional, reliable, and affordable. PcJohncorp helped us switch to solar power, and we couldn't be happier. The savings on our electricity bill are remarkable!"</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Greyven Band">
+                    </div>
+                    <h4 class="testimonial-name">Greyven Band</h4>
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">"The PURONICS water softener system from PcJohncorp has made such a difference in our home! Our appliances are protected, our skin feels better, and the water tastes great. The team was professional and explained everything clearly. Excellent water treatment solution!"</p>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="scrollToContact()">Get Your Quote</button>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-heading section-heading-white">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How long does a solar installation take?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Most residential solar installations are completed within 1-3 days, depending on the system size and complexity. Commercial installations may take 1-2 weeks. We'll provide a detailed timeline during your consultation.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What is the cost of a solar installation?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Solar installation costs vary based on system size, location, and specific requirements. On average, residential systems range from $10,000 to $30,000. We offer free consultations and detailed quotes with no obligation. Financing options are also available.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Do you provide maintenance services?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we offer comprehensive maintenance packages to keep your solar system operating at peak efficiency. Regular maintenance includes cleaning, inspections, and performance monitoring. We also provide 24/7 support for any issues.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What warranty do you offer?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We provide comprehensive warranties covering equipment, installation workmanship, and system performance. Most solar panels come with 25-year warranties, and we offer extended warranty options for additional peace of mind.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Can solar panels work during power outages?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Standard grid-tied solar systems shut down during power outages for safety reasons. However, we offer battery backup systems that can provide power during outages, keeping your essential appliances running.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Are there any government incentives available?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, there are various federal and state incentives, tax credits, and rebates available for solar installations. We'll help you navigate these programs and maximize your savings. Our team stays updated on all available incentives.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What are the benefits of a water softener system?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Water softener systems eliminate hard water minerals, protecting your appliances from scale buildup, reducing soap usage, improving water taste and quality, and extending the life of your plumbing and water-using appliances. You'll also notice softer skin and hair, cleaner dishes, and no more hard water stains.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How long does water softener installation take?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Most water softener installations are completed within 2-4 hours. We'll assess your water quality, determine the right system size for your home, and complete the installation professionally with minimal disruption to your daily routine.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Do you offer PURONICS water treatment systems?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we are an authorized independent dealer of PURONICS Water Products. We offer EPA-registered, certified water treatment systems including whole-house water softeners and point-of-use solutions. All our systems meet the highest quality standards and come with professional installation and support.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How often does a water softener need maintenance?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Water softeners require minimal maintenance. You'll need to add salt to the brine tank regularly (typically monthly, depending on usage). We provide maintenance guidelines and are available for periodic inspections to ensure your system continues operating efficiently. Most systems are designed to run automatically with minimal intervention.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-heading">Contact Us</h2>
+            <p class="contact-intro">Got questions? We'd love to help you. Fill the form or reach out to us.</p>
+            <div class="contact-wrapper">
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="contactForm" onsubmit="handleFormSubmit(event)">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Your Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="5" placeholder="Your Project or Question" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Send Message</button>
+                        <div id="form-message" class="form-message"></div>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Company Name</h4>
+                            <p>PcJohncorp</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Phone Number</h4>
+                            <p>+1 (347) 902-4742</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Email Address</h4>
+                            <p>info@pcjohncorp.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Physical Address</h4>
+                            <p>1209 Claro drive Manchester CT 06042</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <div class="logo-circle">
+                            <span class="logo-text">PJ</span>
+                        </div>
+                        <h3 class="footer-company-name">PcJohncorp</h3>
+                    </div>
+                    <p class="footer-tagline">Powering future communities with electrical energy.</p>
+                    <p class="footer-description">Leading provider of solar and electrical installation services, committed to delivering sustainable energy solutions for homes and businesses.</p>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Solar Energy Solutions</a></li>
+                        <li><a href="#services">Water Softener Solutions</a></li>
+                        <li><a href="#services">Electrical Installation</a></li>
+                        <li><a href="#services">Energy Management</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Contact Info</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            +1 (347) 902-4742
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            info@pcjohncorp.com
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            1209 Claro drive Manchester CT 06042
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-social">
+                    <a href="https://web.facebook.com/profile.php?id=61584862535793" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Facebook">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="Instagram">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="Twitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <p class="footer-copyright">© 2024 PcJohncorp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
