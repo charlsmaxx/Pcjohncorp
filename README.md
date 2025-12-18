@@ -35,8 +35,8 @@ pcjohncorp/
 
 1. **Clone the repository** (or download):
    ```bash
-   git clone https://github.com/YOUR_USERNAME/pcjohncorp-website.git
-   cd pcjohncorp-website
+   git clone https://github.com/charlsmaxx/Pcjohncorp.git
+   cd Pcjohncorp
    ```
 
 2. **Install backend dependencies**:
@@ -108,6 +108,27 @@ See `GITHUB_GUIDE.md` for instructions on:
 - Deploying to hosting services
 - Environment setup for production
 
+### Static Hosting Options:
+
+1. **Netlify** (Recommended)
+   - Drag and drop the `frontend/` folder
+   - Or connect GitHub repo for auto-deploy
+   - Free SSL certificate included
+
+2. **Vercel**
+   - Connect GitHub repository
+   - Automatic deployments on push
+   - Free tier available
+
+3. **GitHub Pages**
+   - Push to `gh-pages` branch
+   - Enable in repository settings
+   - Free hosting
+
+4. **Cloudflare Pages**
+   - Connect GitHub repository
+   - Free hosting with CDN
+
 ## 🔒 Security Notes
 
 - Never commit `.env` files to version control
@@ -118,12 +139,13 @@ See `GITHUB_GUIDE.md` for instructions on:
 
 Copyright © 2025 PcJohncorp. All rights reserved.
 
-## 📞 Contact
+## 📞 Contact Information
 
 - **Address**: 1209 Claro drive Manchester CT 06042
 - **Phone**: +1 (347) 902-4742
 - **Email**: info@pcjohncorp.com
 - **Facebook**: [PcJohncorp Facebook Page](https://web.facebook.com/profile.php?id=61584862535793)
+- **YouTube**: [PcJohncorp YouTube Channel](https://www.youtube.com/@Pcjohncorp/)
 
 ---
 
