@@ -62,9 +62,10 @@ body {
     align-items: center;
     text-decoration: none;
     transition: opacity 0.3s ease;
-    background-color: #ede9fe;
+    background-color: #ede9fe !important;
     border-radius: 12px;
     padding: 8px;
+    box-sizing: border-box;
 }
 
 .logo-link:hover {
@@ -79,6 +80,7 @@ body {
     display: block;
     /* Logo in original black color */
     filter: none;
+    background-color: transparent;
 }
 
 /* Fallback for old logo-circle if needed */
