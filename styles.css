@@ -54,9 +54,34 @@ body {
 .logo-section {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
 }
 
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    background-color: #ede9fe;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.logo-link:hover {
+    opacity: 0.8;
+}
+
+.logo-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+    /* Logo in original black color */
+    filter: none;
+}
+
+/* Fallback for old logo-circle if needed */
 .logo-circle {
     width: 60px;
     height: 60px;
@@ -1063,6 +1088,18 @@ body {
     margin-bottom: 15px;
 }
 
+.footer-logo-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    display: block;
+    /* Logo in original black color */
+    filter: none;
+    background-color: #ede9fe;
+    border-radius: 12px;
+    padding: 8px;
+}
+
 .footer-company-name {
     font-size: 20px;
     font-weight: 700;
@@ -1403,7 +1440,18 @@ body {
     }
 
     .logo-section {
-        gap: 10px;
+        gap: 8px;
+    }
+
+    .logo-image {
+        width: 100px;
+        height: 100px;
+        /* Logo in original black color */
+        filter: none;
+    }
+    
+    .logo-link {
+        padding: 6px;
     }
 
     .logo-circle {
@@ -1496,9 +1544,20 @@ body {
     }
 
     .logo-section {
-        gap: 8px;
+        gap: 6px;
         flex-shrink: 1;
         min-width: 0;
+    }
+
+    .logo-image {
+        width: 80px;
+        height: 80px;
+        /* Logo in original black color */
+        filter: none;
+    }
+    
+    .logo-link {
+        padding: 5px;
     }
 
     .logo-circle {

@@ -42,7 +42,14 @@ async function handleFormSubmit(event) {
     
     try {
         // Backend API URL - Update this for production deployment
-        const API_BASE_URL = window.location.hostname === 'localhost' 
+        // For local development: use localhost (file:// protocol or localhost)
+        // For production: update the production URL below
+        const isLocalDev = window.location.hostname === 'localhost' 
+            || window.location.hostname === '127.0.0.1'
+            || window.location.protocol === 'file:'
+            || !window.location.hostname;
+        
+        const API_BASE_URL = isLocalDev 
             ? 'http://localhost:3000' 
             : 'https://your-backend-url.com'; // TODO: Update with your deployed backend URL
         
