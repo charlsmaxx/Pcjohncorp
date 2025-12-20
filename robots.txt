@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://charlsmaxx.github.io/Pcjohncorp/sitemap.xml
+Sitemap: https://stately-rabanadas-726bf5.netlify.app/sitemap.xml
