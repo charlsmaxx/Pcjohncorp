@@ -49,9 +49,17 @@ async function handleFormSubmit(event) {
             || window.location.protocol === 'file:'
             || !window.location.hostname;
         
+        // TODO: Replace with your actual deployed backend URL
+        // Examples: 'https://your-backend.railway.app' or 'https://your-backend.render.com'
         const API_BASE_URL = isLocalDev 
             ? 'http://localhost:3000' 
-            : 'https://your-backend-url.com'; // TODO: Update with your deployed backend URL
+            : null; // Set to null to show error message if backend not deployed
+        
+        // Check if backend URL is configured
+        if (!API_BASE_URL) {
+            showFormMessage('Backend server is not configured. Please contact us directly at pcjohncorp998@gmail.com or +1 (845) 404-1285.', 'error');
+            return;
+        }
         
         // Send data to backend API
         const response = await fetch(`${API_BASE_URL}/api/contact`, {
