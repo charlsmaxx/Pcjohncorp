@@ -35,6 +35,10 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://pcjohncorp.com/">
     
+    <!-- Preload critical hero images for faster initial render -->
+    <link rel="preload" as="image" href="Images/hero-solar-installation.webp">
+    <link rel="preload" as="image" href="Images/hero-water-treatment.png">
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -407,7 +411,7 @@
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <div class="testimonial-avatar">
-                        <img src="https://i.pravatar.cc/150?img=1" alt="Rachael Charles">
+                        <img src="https://i.pravatar.cc/150?img=1" alt="Rachael Charles" loading="lazy" width="150" height="150">
                     </div>
                     <h4 class="testimonial-name">Rachael Charles</h4>
                     <div class="testimonial-rating">
@@ -421,7 +425,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-avatar">
-                        <img src="https://i.pravatar.cc/150?img=5" alt="Mary Jane">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Mary Jane" loading="lazy" width="150" height="150">
                     </div>
                     <h4 class="testimonial-name">Mary Jane</h4>
                     <div class="testimonial-rating">
@@ -435,7 +439,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-avatar">
-                        <img src="https://i.pravatar.cc/150?img=12" alt="Musa Ali">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Musa Ali" loading="lazy" width="150" height="150">
                     </div>
                     <h4 class="testimonial-name">Musa Ali</h4>
                     <div class="testimonial-rating">
@@ -449,7 +453,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-avatar">
-                        <img src="https://i.pravatar.cc/150?img=33" alt="Greyven Band">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Greyven Band" loading="lazy" width="150" height="150">
                     </div>
                     <h4 class="testimonial-name">Greyven Band</h4>
                     <div class="testimonial-rating">
@@ -659,7 +663,7 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <div class="footer-logo">
-                        <img src="Images/logo.png" alt="PcJohncorp Logo - PC Water Sustener" class="footer-logo-image" width="120" height="120">
+                        <img src="Images/logo.png" alt="PcJohncorp Logo - PC Water Sustener" class="footer-logo-image" width="120" height="120" loading="lazy">
                         <h3 class="footer-company-name">PcJohncorp</h3>
                     </div>
                     <p class="footer-tagline">Clean Energy • Pure Water • Reliable Power</p>
