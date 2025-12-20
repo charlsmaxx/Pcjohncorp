@@ -8,7 +8,33 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Allow requests from frontend (update origin in production)
+// CORS configuration - allow requests from frontend
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'https://charlsmaxx.github.io',
+    'https://pcjohncorp.com',
+    process.env.FRONTEND_URL
+].filter(Boolean); // Remove undefined values
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+            callback(null, true);
+        } else {
+            // In production, you might want to be stricter
+            if (process.env.NODE_ENV === 'production') {
+                callback(new Error('Not allowed by CORS'));
+            } else {
+                callback(null, true); // Allow in development
+            }
+        }
+    },
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,9 +71,9 @@ const transporter = nodemailer.createTransport({
     pool: true,
     maxConnections: 1,
     maxMessages: 3,
-    // Enable debugging
-    debug: true, // Set to true for detailed connection logs
-    logger: true
+    // Enable debugging (set to false in production)
+    debug: process.env.NODE_ENV !== 'production', // Only debug in development
+    logger: process.env.NODE_ENV !== 'production' // Only log in development
 });
 
 // Check if environment variables are set

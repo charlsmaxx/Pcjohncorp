@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pcjohncorp.com/sitemap.xml
+Sitemap: https://charlsmaxx.github.io/Pcjohncorp/sitemap.xml

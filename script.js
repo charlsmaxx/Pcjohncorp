@@ -49,11 +49,13 @@ async function handleFormSubmit(event) {
             || window.location.protocol === 'file:'
             || !window.location.hostname;
         
-        // TODO: Replace with your actual deployed backend URL
+        // TODO: Replace 'YOUR_BACKEND_URL' with your actual deployed backend URL when ready
         // Examples: 'https://your-backend.railway.app' or 'https://your-backend.render.com'
+        const PRODUCTION_API_URL = 'YOUR_BACKEND_URL'; // Update this when backend is deployed
+        
         const API_BASE_URL = isLocalDev 
             ? 'http://localhost:3000' 
-            : null; // Set to null to show error message if backend not deployed
+            : (PRODUCTION_API_URL !== 'YOUR_BACKEND_URL' ? PRODUCTION_API_URL : null);
         
         // Check if backend URL is configured
         if (!API_BASE_URL) {
