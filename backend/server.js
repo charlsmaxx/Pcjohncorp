@@ -48,95 +48,166 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-// Create reusable transporter object using SMTP transport
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: parseInt(process.env.SMTP_PORT || '587') === 465, // true for 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS  // Your email password or app password
-    },
-    // Increased timeouts to handle slow connections
-    connectionTimeout: 30000, // 30 seconds (increased from 10)
-    greetingTimeout: 30000,   // 30 seconds (increased from 10)
-    socketTimeout: 30000,     // 30 seconds (increased from 10)
-    // TLS/SSL options for better connection handling
-    tls: {
-        // Do not fail on invalid certificates (useful for testing)
-        rejectUnauthorized: false,
-        // Allow legacy TLS versions if needed
-        minVersion: 'TLSv1'
-    },
-    // Connection pool options
-    pool: true,
-    maxConnections: 1,
-    maxMessages: 3,
-    // Enable debugging (set to false in production)
-    debug: process.env.NODE_ENV !== 'production', // Only debug in development
-    logger: process.env.NODE_ENV !== 'production' // Only log in development
-});
+// Determine email service (used throughout the file)
+const emailService = process.env.EMAIL_SERVICE?.toLowerCase();
 
-// Check if environment variables are set
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('\n❌ ERROR: Email credentials not found!');
-    console.error('Please create a .env file with the following:');
-    console.error('EMAIL_USER=your-email@gmail.com');
-    console.error('EMAIL_PASS=your-app-password');
-    console.error('RECEIVING_EMAIL=info@pcjohncorp.com\n');
-    console.error('For Gmail, you MUST use an App Password, not your regular password.');
-    console.error('See EMAIL_SETUP.md for detailed instructions.\n');
+// Debug logging for email service detection (always log in production too for debugging)
+console.log('\n📧 Email Service Configuration:');
+console.log(`   EMAIL_SERVICE=${process.env.EMAIL_SERVICE || '(not set - using Gmail SMTP)'}`);
+if (emailService === 'resend') {
+    console.log(`   RESEND_API_KEY=${process.env.RESEND_API_KEY ? '***' + process.env.RESEND_API_KEY.slice(-4) : 'NOT SET ❌'}`);
+    if (!process.env.RESEND_API_KEY) {
+        console.error('   ⚠️  WARNING: RESEND_API_KEY is not set!');
+    }
+} else {
+    console.log(`   EMAIL_USER=${process.env.EMAIL_USER || 'NOT SET ❌'}`);
+    console.log(`   EMAIL_PASS=${process.env.EMAIL_PASS ? '***' + process.env.EMAIL_PASS.slice(-4) : 'NOT SET ❌'}`);
+}
+console.log('');
+
+// Create transporter configuration based on email service
+function createTransporterConfig() {
+    
+    // Resend SMTP configuration (recommended for Render and cloud platforms)
+    if (emailService === 'resend') {
+        if (!process.env.RESEND_API_KEY) {
+            console.error('\n❌ ERROR: RESEND_API_KEY not found!');
+            console.error('When using EMAIL_SERVICE=resend, you must set RESEND_API_KEY');
+            console.error('Get your API key from: https://resend.com/api-keys\n');
+        }
+        
+        return {
+            host: 'smtp.resend.com',
+            port: 465,
+            secure: true, // SSL/TLS
+            auth: {
+                user: 'resend',
+                pass: process.env.RESEND_API_KEY
+            },
+            connectionTimeout: 30000,
+            greetingTimeout: 30000,
+            socketTimeout: 30000
+        };
+    }
+    
+    // Default Gmail/Generic SMTP configuration
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+    return {
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: smtpPort,
+        secure: smtpPort === 465, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL_USER, // Your email address
+            pass: process.env.EMAIL_PASS  // Your email password or app password
+        },
+        // Increased timeouts to handle slow connections
+        connectionTimeout: 30000, // 30 seconds (increased from 10)
+        greetingTimeout: 30000,   // 30 seconds (increased from 10)
+        socketTimeout: 30000,     // 30 seconds (increased from 10)
+        // TLS/SSL options for better connection handling
+        tls: {
+            // Do not fail on invalid certificates (useful for testing)
+            rejectUnauthorized: false,
+            // Allow legacy TLS versions if needed
+            minVersion: 'TLSv1'
+        },
+        // Connection pool options
+        pool: true,
+        maxConnections: 1,
+        maxMessages: 3,
+        // Enable debugging (set to false in production)
+        debug: process.env.NODE_ENV !== 'production', // Only debug in development
+        logger: process.env.NODE_ENV !== 'production' // Only log in development
+    };
+}
+
+// Create reusable transporter object using SMTP transport
+const transporterConfig = createTransporterConfig();
+const transporter = nodemailer.createTransport(transporterConfig);
+
+// Check if environment variables are set (only for non-Resend services)
+if (emailService !== 'resend') {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('\n❌ ERROR: Email credentials not found!');
+        console.error('Please create a .env file with the following:');
+        console.error('EMAIL_USER=your-email@gmail.com');
+        console.error('EMAIL_PASS=your-app-password');
+        console.error('RECEIVING_EMAIL=info@pcjohncorp.com\n');
+        console.error('For Gmail, you MUST use an App Password, not your regular password.');
+        console.error('\n💡 Tip: For Render/cloud platforms, consider using Resend:');
+        console.error('   Set EMAIL_SERVICE=resend and RESEND_API_KEY=your_key');
+        console.error('   See RENDER_EMAIL_FIX.md for details.\n');
+        console.error('See EMAIL_SETUP.md for detailed instructions.\n');
+    }
 }
 
 // Verify transporter configuration with better error handling
-transporter.verify(function (error, success) {
-    if (error) {
-        console.error('\n❌ Email server connection error:', error.message);
-        console.error('Error code:', error.code);
-        
-        if (error.code === 'EAUTH') {
-            console.error('\n⚠️  AUTHENTICATION FAILED!');
-            console.error('Common causes:');
-            console.error('1. Using regular Gmail password instead of App Password');
-            console.error('2. 2-Step Verification not enabled');
-            console.error('3. Incorrect email or password in .env file');
-            console.error('\n📖 Solution:');
-            console.error('1. Go to: https://myaccount.google.com/apppasswords');
-            console.error('2. Create an App Password for "Mail"');
-            console.error('3. Copy the 16-character password');
-            console.error('4. Update EMAIL_PASS in your .env file');
-            console.error('\nSee EMAIL_SETUP.md for detailed instructions.\n');
-        } else if (error.code === 'ETIMEDOUT' || error.code === 'ECONNECTION' || error.code === 'ESOCKET') {
-            console.error('\n⚠️  CONNECTION TIMEOUT!');
-            console.error('This usually means:');
-            console.error('1. Firewall is blocking SMTP ports (587 or 465)');
-            console.error('2. DNS resolution issues');
-            console.error('3. Network connectivity problems');
-            console.error('4. Antivirus blocking the connection');
-            console.error('\n📖 Solutions:');
-            console.error('1. Check Windows Firewall - allow Node.js');
-            console.error('2. Temporarily disable antivirus to test');
-            console.error('3. Try using port 465 instead of 587 (set SMTP_PORT=465 in .env)');
-            console.error('4. Test DNS: nslookup smtp.gmail.com');
-            console.error('5. Test port: Test-NetConnection smtp.gmail.com -Port 587');
-            console.error('6. Try a different network (mobile hotspot)');
-            console.error('\nSee EMAIL_TROUBLESHOOTING.md for detailed instructions.\n');
-        } else {
-            console.error('\n⚠️  CONNECTION ERROR!');
-            console.error('Error details:', {
-                code: error.code,
-                command: error.command,
-                response: error.response
-            });
-            console.error('\nSee EMAIL_TROUBLESHOOTING.md for detailed instructions.\n');
-        }
+// Skip verify for Resend (it may timeout during verify but still work for sending)
+if (emailService === 'resend') {
+    if (!process.env.RESEND_API_KEY) {
+        console.error('\n❌ ERROR: RESEND_API_KEY not found!');
+        console.error('When using EMAIL_SERVICE=resend, you must set RESEND_API_KEY in environment variables.');
+        console.error('Get your API key from: https://resend.com/api-keys\n');
     } else {
-        console.log('✅ Email server is ready to send messages');
-        console.log(`📧 Sending emails from: ${process.env.EMAIL_USER}`);
-        console.log(`📬 Receiving emails at: ${process.env.RECEIVING_EMAIL || process.env.EMAIL_USER}`);
-        console.log(`🔌 Using SMTP: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${process.env.SMTP_PORT || '587'}\n`);
+        console.log('✅ Resend email service configured');
+        console.log(`📬 Receiving emails at: ${process.env.RECEIVING_EMAIL || 'configured email'}`);
+        console.log(`🔌 Using Resend SMTP: smtp.resend.com:465`);
+        console.log('⚠️  Note: Connection verification skipped for Resend (will verify on first send)\n');
     }
-});
+} else {
+    transporter.verify(function (error, success) {
+        if (error) {
+            console.error('\n❌ Email server connection error:', error.message);
+            console.error('Error code:', error.code);
+            
+            if (error.code === 'EAUTH') {
+                console.error('\n⚠️  AUTHENTICATION FAILED!');
+                console.error('Common causes:');
+                console.error('1. Using regular Gmail password instead of App Password');
+                console.error('2. 2-Step Verification not enabled');
+                console.error('3. Incorrect email or password in .env file');
+                console.error('\n📖 Solution:');
+                console.error('1. Go to: https://myaccount.google.com/apppasswords');
+                console.error('2. Create an App Password for "Mail"');
+                console.error('3. Copy the 16-character password');
+                console.error('4. Update EMAIL_PASS in your .env file');
+                console.error('\nSee EMAIL_SETUP.md for detailed instructions.\n');
+            } else if (error.code === 'ETIMEDOUT' || error.code === 'ECONNECTION' || error.code === 'ESOCKET') {
+                console.error('\n⚠️  CONNECTION TIMEOUT!');
+                console.error('This usually means:');
+                console.error('1. Cloud platform (Render/Heroku/etc.) is blocking SMTP ports (587 or 465)');
+                console.error('2. Firewall is blocking SMTP ports');
+                console.error('3. DNS resolution issues');
+                console.error('4. Network connectivity problems');
+                console.error('\n📖 Solutions (for Render/Cloud Platforms):');
+                console.error('1. Try port 465 instead of 587: Set SMTP_PORT=465 in environment variables');
+                console.error('2. Use Resend API (recommended): Set EMAIL_SERVICE=resend and RESEND_API_KEY');
+                console.error('3. Use SendGrid: Set EMAIL_SERVICE=sendgrid and SENDGRID_API_KEY');
+                console.error('\n📖 Solutions (for Local Development):');
+                console.error('1. Check Windows Firewall - allow Node.js');
+                console.error('2. Temporarily disable antivirus to test');
+                console.error('3. Try using port 465: Set SMTP_PORT=465 in .env');
+                console.error('4. Test DNS: nslookup smtp.gmail.com');
+                console.error('5. Test port: Test-NetConnection smtp.gmail.com -Port 587');
+                console.error('\nSee RENDER_EMAIL_FIX.md for Render-specific solutions.');
+                console.error('See EMAIL_TROUBLESHOOTING.md for detailed instructions.\n');
+            } else {
+                console.error('\n⚠️  CONNECTION ERROR!');
+                console.error('Error details:', {
+                    code: error.code,
+                    command: error.command,
+                    response: error.response
+                });
+                console.error('\nSee EMAIL_TROUBLESHOOTING.md for detailed instructions.\n');
+            }
+        } else {
+            console.log('✅ Email server is ready to send messages');
+            console.log(`📧 Sending emails from: ${process.env.EMAIL_USER}`);
+            console.log(`📬 Receiving emails at: ${process.env.RECEIVING_EMAIL || process.env.EMAIL_USER}`);
+            console.log(`🔌 Using SMTP: ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${process.env.SMTP_PORT || '587'}\n`);
+        }
+    });
+}
 
 // Request logging middleware for debugging
 app.use((req, res, next) => {
@@ -213,16 +284,29 @@ app.post('/api/contact', async (req, res) => {
         const sanitizedMessage = sanitize(message);
 
         console.log('✅ Data sanitized, preparing email...');
+        
+        // Determine sender email based on email service
+        let senderEmail;
+        if (emailService === 'resend') {
+            // Resend: Use verified domain email or onboarding@resend.dev for free accounts
+            senderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        } else {
+            senderEmail = process.env.EMAIL_USER;
+        }
+        
+        const receivingEmail = process.env.RECEIVING_EMAIL || senderEmail;
+        
         console.log('📬 Email config:', {
-            from: process.env.EMAIL_USER,
-            to: process.env.RECEIVING_EMAIL || process.env.EMAIL_USER,
-            hasCredentials: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
+            service: emailService || 'smtp',
+            from: senderEmail,
+            to: receivingEmail,
+            hasCredentials: emailService === 'resend' ? !!process.env.RESEND_API_KEY : !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
         });
 
         // Email content
         const mailOptions = {
-            from: `"${sanitizedName}" <${process.env.EMAIL_USER}>`,
-            to: process.env.RECEIVING_EMAIL || process.env.EMAIL_USER, // Email where you want to receive messages
+            from: `"${sanitizedName}" <${senderEmail}>`,
+            to: receivingEmail, // Email where you want to receive messages
             replyTo: sanitizedEmail, // So you can reply directly to the sender
             subject: `New Contact Form Message from ${sanitizedName}`,
             html: `
@@ -312,22 +396,48 @@ app.post('/api/test-email', async (req, res) => {
     try {
         console.log('\n🧪 Testing email configuration...');
         
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            return res.status(500).json({
-                success: false,
-                message: 'Email credentials not configured',
-                hasEmailUser: !!process.env.EMAIL_USER,
-                hasEmailPass: !!process.env.EMAIL_PASS
-            });
+        // Check configuration based on email service
+        const testEmailService = process.env.EMAIL_SERVICE?.toLowerCase();
+        if (testEmailService === 'resend') {
+            if (!process.env.RESEND_API_KEY) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Resend API key not configured',
+                    service: 'resend',
+                    hasResendKey: !!process.env.RESEND_API_KEY
+                });
+            }
+        } else {
+            if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Email credentials not configured',
+                    service: 'smtp',
+                    hasEmailUser: !!process.env.EMAIL_USER,
+                    hasEmailPass: !!process.env.EMAIL_PASS
+                });
+            }
         }
         
-        // Verify transporter
-        await transporter.verify();
+        // Verify transporter (skip for Resend - it may timeout but will work on actual send)
+        if (testEmailService === 'resend') {
+            console.log('⚠️  Skipping verification for Resend (will verify on actual send)');
+        } else {
+            await transporter.verify();
+        }
+        
+        // Determine sender email based on email service
+        let testSenderEmail;
+        if (emailService === 'resend') {
+            testSenderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        } else {
+            testSenderEmail = process.env.EMAIL_USER;
+        }
         
         // Try sending a test email
         const testMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.RECEIVING_EMAIL || process.env.EMAIL_USER,
+            from: testSenderEmail,
+            to: process.env.RECEIVING_EMAIL || testSenderEmail,
             subject: 'Test Email from PcJohncorp Server',
             text: 'This is a test email to verify the email configuration is working correctly.',
             html: '<p>This is a test email to verify the email configuration is working correctly.</p>'

@@ -37,21 +37,38 @@
 
 4. **Add Environment Variables**
 
+   **Option A: Using Gmail SMTP (may have timeout issues on Render)**
+   
    Click "Add Environment Variable" and add these:
 
    ```
    EMAIL_USER=pcjohncorp998@gmail.com
    EMAIL_PASS=your-gmail-app-password
    RECEIVING_EMAIL=pcjohncorp998@gmail.com
+   SMTP_PORT=465
    PORT=3000
    NODE_ENV=production
    FRONTEND_URL=https://your-netlify-site.netlify.app
    ```
 
+   **Option B: Using Resend (Recommended for Render - avoids SMTP timeout issues)**
+   
+   ```
+   EMAIL_SERVICE=resend
+   RESEND_API_KEY=re_your_resend_api_key_here
+   RECEIVING_EMAIL=pcjohncorp998@gmail.com
+   PORT=3000
+   NODE_ENV=production
+   FRONTEND_URL=https://your-netlify-site.netlify.app
+   ```
+   
+   **Note:** When using Resend, you do NOT need `EMAIL_USER`, `EMAIL_PASS`, `SMTP_HOST`, or `SMTP_PORT`. Remove those if you have them.
+
    **Important:**
-   - Replace `your-gmail-app-password` with your actual Gmail App Password
-   - Get App Password from: https://myaccount.google.com/apppasswords
+   - **For Gmail:** Replace `your-gmail-app-password` with your actual Gmail App Password from: https://myaccount.google.com/apppasswords
+   - **For Resend:** Sign up at https://resend.com and get your API key from the dashboard
    - Replace `your-netlify-site.netlify.app` with your actual Netlify URL
+   - **Note:** If you see SMTP timeout errors, use Resend (Option B) - see `RENDER_EMAIL_FIX.md` for details
 
 5. **Deploy!**
    - Click "Create Web Service"
@@ -158,8 +175,11 @@ All sensitive data should be in Render's environment variables:
 - Check that your Netlify URL is in `allowedOrigins`
 - Check backend logs for CORS errors
 
-### Email Not Sending
-- Verify Gmail App Password is correct
+### Email Not Sending / SMTP Timeout Errors
+- **If you see "Connection timeout" errors:** See `RENDER_EMAIL_FIX.md` for solutions
+- **Quick fix:** Try setting `SMTP_PORT=465` in environment variables
+- **Best solution:** Use Resend API (set `EMAIL_SERVICE=resend` and `RESEND_API_KEY`)
+- Verify Gmail App Password is correct (if using Gmail)
 - Check backend logs for email errors
 - Test with `/api/test-email` endpoint
 - Verify `RECEIVING_EMAIL` is set
@@ -181,3 +201,4 @@ Render provides:
 ---
 
 **Your backend will be live at:** `https://pcjohncorp-backend.onrender.com` 🎉
+

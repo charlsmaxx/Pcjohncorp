@@ -111,3 +111,4 @@ After getting your Netlify URL, update `backend/server.js`:
 ---
 
 **Your frontend will be live at:** `https://your-site-name.netlify.app` 🎉
+

@@ -83,3 +83,4 @@ FRONTEND_URL=https://your-netlify-site.netlify.app
 ---
 
 **Ready to deploy! Follow the guides in `NETLIFY_DEPLOYMENT.md` and `RENDER_DEPLOYMENT.md`** 🎉
+
