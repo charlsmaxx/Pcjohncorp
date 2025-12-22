@@ -49,9 +49,8 @@ async function handleFormSubmit(event) {
             || window.location.protocol === 'file:'
             || !window.location.hostname;
         
-        // TODO: Replace 'YOUR_BACKEND_URL' with your actual deployed backend URL when ready
-        // Examples: 'https://your-backend.railway.app' or 'https://your-backend.render.com'
-        const PRODUCTION_API_URL = 'YOUR_BACKEND_URL'; // Update this when backend is deployed
+        // Backend API URL - deployed on Render
+        const PRODUCTION_API_URL = 'https://pcjohncorp-backend.onrender.com';
         
         const API_BASE_URL = isLocalDev 
             ? 'http://localhost:3000' 
