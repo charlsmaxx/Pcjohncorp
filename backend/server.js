@@ -49,19 +49,38 @@ app.get('/', (req, res) => {
 });
 
 // Determine email service (used throughout the file)
-const emailService = process.env.EMAIL_SERVICE?.toLowerCase();
+// Handle whitespace and case sensitivity issues
+const emailServiceRaw = process.env.EMAIL_SERVICE || '';
+const emailService = emailServiceRaw.trim().toLowerCase();
+
+// Helper function to check if Resend should be used
+function isResendService() {
+    // Check if EMAIL_SERVICE is explicitly set to 'resend'
+    if (emailService === 'resend') {
+        return true;
+    }
+    // Auto-detect: If RESEND_API_KEY is set, assume Resend (even if EMAIL_SERVICE not set)
+    if (process.env.RESEND_API_KEY) {
+        return true;
+    }
+    return false;
+}
 
 // Debug logging for email service detection (always log in production too for debugging)
 console.log('\n📧 Email Service Configuration:');
-console.log(`   EMAIL_SERVICE=${process.env.EMAIL_SERVICE || '(not set - using Gmail SMTP)'}`);
-if (emailService === 'resend') {
-    console.log(`   RESEND_API_KEY=${process.env.RESEND_API_KEY ? '***' + process.env.RESEND_API_KEY.slice(-4) : 'NOT SET ❌'}`);
-    if (!process.env.RESEND_API_KEY) {
-        console.error('   ⚠️  WARNING: RESEND_API_KEY is not set!');
+console.log(`   EMAIL_SERVICE (raw)=${JSON.stringify(process.env.EMAIL_SERVICE)}`);
+console.log(`   EMAIL_SERVICE (processed)=${emailService || '(not set)'}`);
+console.log(`   RESEND_API_KEY=${process.env.RESEND_API_KEY ? '***' + process.env.RESEND_API_KEY.slice(-4) : 'NOT SET ❌'}`);
+console.log(`   EMAIL_USER=${process.env.EMAIL_USER || 'NOT SET ❌'}`);
+console.log(`   EMAIL_PASS=${process.env.EMAIL_PASS ? '***' + process.env.EMAIL_PASS.slice(-4) : 'NOT SET ❌'}`);
+
+if (isResendService()) {
+    if (!emailService) {
+        console.log('   ℹ️  Auto-detected Resend (RESEND_API_KEY found but EMAIL_SERVICE not set)');
     }
+    console.log('   ✅ Using Resend email service');
 } else {
-    console.log(`   EMAIL_USER=${process.env.EMAIL_USER || 'NOT SET ❌'}`);
-    console.log(`   EMAIL_PASS=${process.env.EMAIL_PASS ? '***' + process.env.EMAIL_PASS.slice(-4) : 'NOT SET ❌'}`);
+    console.log('   ℹ️  Using Gmail/Generic SMTP');
 }
 console.log('');
 
@@ -69,7 +88,7 @@ console.log('');
 function createTransporterConfig() {
     
     // Resend SMTP configuration (recommended for Render and cloud platforms)
-    if (emailService === 'resend') {
+    if (isResendService()) {
         if (!process.env.RESEND_API_KEY) {
             console.error('\n❌ ERROR: RESEND_API_KEY not found!');
             console.error('When using EMAIL_SERVICE=resend, you must set RESEND_API_KEY');
@@ -126,7 +145,7 @@ const transporterConfig = createTransporterConfig();
 const transporter = nodemailer.createTransport(transporterConfig);
 
 // Check if environment variables are set (only for non-Resend services)
-if (emailService !== 'resend') {
+if (!isResendService()) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.error('\n❌ ERROR: Email credentials not found!');
         console.error('Please create a .env file with the following:');
@@ -143,7 +162,7 @@ if (emailService !== 'resend') {
 
 // Verify transporter configuration with better error handling
 // Skip verify for Resend (it may timeout during verify but still work for sending)
-if (emailService === 'resend') {
+if (isResendService()) {
     if (!process.env.RESEND_API_KEY) {
         console.error('\n❌ ERROR: RESEND_API_KEY not found!');
         console.error('When using EMAIL_SERVICE=resend, you must set RESEND_API_KEY in environment variables.');
@@ -287,7 +306,7 @@ app.post('/api/contact', async (req, res) => {
         
         // Determine sender email based on email service
         let senderEmail;
-        if (emailService === 'resend') {
+        if (isResendService()) {
             // Resend: Use verified domain email or onboarding@resend.dev for free accounts
             senderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
         } else {
