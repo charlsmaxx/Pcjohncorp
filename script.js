@@ -49,19 +49,24 @@ async function handleFormSubmit(event) {
             || window.location.protocol === 'file:'
             || !window.location.hostname;
         
-        // TODO: Replace 'YOUR_BACKEND_URL' with your actual deployed backend URL when ready
-        // Examples: 'https://your-backend.railway.app' or 'https://your-backend.render.com'
-        const PRODUCTION_API_URL = 'YOUR_BACKEND_URL'; // Update this when backend is deployed
+        // Backend API URL - deployed on Render
+        const PRODUCTION_API_URL = 'https://pcjohncorp-backend.onrender.com';
         
-        const API_BASE_URL = isLocalDev 
-            ? 'http://localhost:3000' 
-            : (PRODUCTION_API_URL !== 'YOUR_BACKEND_URL' ? PRODUCTION_API_URL : null);
+        // Determine which backend URL to use
+        let API_BASE_URL;
+        if (isLocalDev) {
+            API_BASE_URL = 'http://localhost:3000';
+        } else {
+            API_BASE_URL = PRODUCTION_API_URL;
+        }
         
         // Check if backend URL is configured
         if (!API_BASE_URL) {
             showFormMessage('Backend server is not configured. Please contact us directly at pcjohncorp998@gmail.com or +1 (845) 404-1285.', 'error');
             return;
         }
+        
+        console.log('Using backend URL:', API_BASE_URL); // Debug log
         
         // Send data to backend API
         const response = await fetch(`${API_BASE_URL}/api/contact`, {
