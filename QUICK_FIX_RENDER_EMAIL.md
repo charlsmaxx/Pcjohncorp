@@ -58,3 +58,10 @@ Use Resend (free, works perfectly on Render):
 ---
 
 **The server code has already been updated to support both solutions!** ✅
+
+
+
+
+
+
+

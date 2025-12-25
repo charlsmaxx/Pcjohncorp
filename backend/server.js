@@ -1,7 +1,9 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -41,11 +43,29 @@ app.use(express.urlencoded({ extended: true }));
 
 // Optional: Serve static files from frontend (for local development only)
 // For production, deploy frontend and backend separately
-// Enable below for local development:
+// Frontend is now deployed separately on Netlify, so we don't serve static files here
+// If you need to serve frontend locally, uncomment below:
+/*
 const frontendPath = path.join(__dirname, '..', 'frontend');
-app.use(express.static(frontendPath));
+if (fs.existsSync(frontendPath)) {
+    app.use(express.static(frontendPath));
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+    });
+}
+*/
+
+// Health check endpoint for root path
 app.get('/', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    res.json({ 
+        status: 'ok', 
+        message: 'PcJohncorp Backend API is running',
+        endpoints: {
+            health: '/api/health',
+            contact: '/api/contact',
+            testEmail: '/api/test-email'
+        }
+    });
 });
 
 // Determine email service (used throughout the file)
@@ -183,6 +203,18 @@ if (isResendForVerify) {
         console.log('✅ Resend email service configured');
         console.log(`📬 Receiving emails at: ${process.env.RECEIVING_EMAIL || 'configured email'}`);
         console.log(`🔌 Using Resend SMTP: smtp.resend.com:465`);
+        
+        // Check if domain email is configured
+        if (process.env.RESEND_FROM_EMAIL) {
+            console.log(`📧 Sending emails from: ${process.env.RESEND_FROM_EMAIL}`);
+            console.log('✅ Using verified domain email');
+        } else {
+            console.log('📧 Sending emails from: onboarding@resend.dev (default)');
+            console.log('⚠️  RESEND_FROM_EMAIL not set - using default Resend email');
+            console.log('💡 To use your domain (pcjohncorp.com), set RESEND_FROM_EMAIL=noreply@pcjohncorp.com');
+            console.log('📖 See RESEND_DOMAIN_VERIFICATION.md for domain verification steps');
+        }
+        
         console.log('⚠️  Note: Connection verification skipped for Resend (will verify on first send)\n');
     }
 } else {
@@ -252,17 +284,80 @@ app.use((req, res, next) => {
     next();
 });
 
-// Helper function to create transporter with retry logic
+// Initialize Resend client if using Resend
+let resendClient = null;
+if (isResendService() && process.env.RESEND_API_KEY) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+    console.log('✅ Resend client initialized');
+}
+
+// Helper function to send email with retry logic
 async function sendEmailWithRetry(mailOptions, maxRetries = 3) {
+    // Use Resend API if configured, otherwise use Nodemailer SMTP
+    if (isResendService() && resendClient) {
+        return await sendEmailWithResendAPI(mailOptions, maxRetries);
+    } else {
+        return await sendEmailWithNodemailer(mailOptions, maxRetries);
+    }
+}
+
+// Send email using Resend REST API (no SMTP, works on Render)
+async function sendEmailWithResendAPI(mailOptions, maxRetries = 3) {
     let lastError;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-            console.log(`📤 Attempt ${attempt} of ${maxRetries}...`);
+            console.log(`📤 Resend API Attempt ${attempt} of ${maxRetries}...`);
+            
+            // Extract email from "Name <email>" format
+            const fromMatch = mailOptions.from.match(/<(.+)>/);
+            const fromEmail = fromMatch ? fromMatch[1] : mailOptions.from;
+            
+            const { data, error } = await resendClient.emails.send({
+                from: fromEmail,
+                to: mailOptions.to,
+                replyTo: mailOptions.replyTo,
+                subject: mailOptions.subject,
+                html: mailOptions.html,
+                text: mailOptions.text
+            });
+            
+            if (error) {
+                throw new Error(error.message || 'Resend API error');
+            }
+            
+            console.log('✅ Resend API email sent successfully!');
+            console.log('📧 Resend ID:', data?.id);
+            
+            // Return in Nodemailer-compatible format
+            return {
+                messageId: data?.id,
+                response: 'Email sent via Resend API',
+                accepted: [mailOptions.to]
+            };
+        } catch (error) {
+            lastError = error;
+            console.error(`❌ Resend API Attempt ${attempt} failed:`, error.message);
+            if (attempt < maxRetries) {
+                const delay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
+                console.log(`⏳ Retrying in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+    }
+    throw lastError;
+}
+
+// Send email using Nodemailer SMTP (for Gmail/other SMTP)
+async function sendEmailWithNodemailer(mailOptions, maxRetries = 3) {
+    let lastError;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            console.log(`📤 SMTP Attempt ${attempt} of ${maxRetries}...`);
             const info = await transporter.sendMail(mailOptions);
             return info;
         } catch (error) {
             lastError = error;
-            console.error(`❌ Attempt ${attempt} failed:`, error.message);
+            console.error(`❌ SMTP Attempt ${attempt} failed:`, error.message);
             if (attempt < maxRetries) {
                 const delay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
                 console.log(`⏳ Retrying in ${delay}ms...`);
@@ -321,6 +416,15 @@ app.post('/api/contact', async (req, res) => {
         if (isResendService()) {
             // Resend: Use verified domain email or onboarding@resend.dev for free accounts
             senderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+            
+            // Warn if using default onboarding email (domain not configured)
+            if (!process.env.RESEND_FROM_EMAIL || senderEmail === 'onboarding@resend.dev') {
+                console.log('⚠️  Using default Resend email (onboarding@resend.dev)');
+                console.log('💡 Tip: Set RESEND_FROM_EMAIL=noreply@pcjohncorp.com in Render to use your verified domain');
+                console.log('📖 See RESEND_DOMAIN_VERIFICATION.md for domain setup instructions');
+            } else {
+                console.log(`✅ Using verified domain email: ${senderEmail}`);
+            }
         } else {
             senderEmail = process.env.EMAIL_USER;
         }
@@ -328,10 +432,11 @@ app.post('/api/contact', async (req, res) => {
         const receivingEmail = process.env.RECEIVING_EMAIL || senderEmail;
         
         console.log('📬 Email config:', {
-            service: emailService || 'smtp',
+            service: isResendService() ? 'resend' : (emailService || 'smtp'),
             from: senderEmail,
             to: receivingEmail,
-            hasCredentials: emailService === 'resend' ? !!process.env.RESEND_API_KEY : !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
+            hasCredentials: isResendService() ? !!process.env.RESEND_API_KEY : !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
+            usingDomainEmail: isResendService() && process.env.RESEND_FROM_EMAIL ? true : false
         });
 
         // Email content
@@ -376,6 +481,13 @@ This message was sent from the PcJohncorp contact form.
 
         // Send email with retry logic
         console.log('📤 Attempting to send email...');
+        console.log('📧 Mail options:', {
+            from: mailOptions.from,
+            to: mailOptions.to,
+            subject: mailOptions.subject,
+            usingService: isResendService() ? 'Resend' : 'SMTP'
+        });
+        
         const info = await sendEmailWithRetry(mailOptions, 3);
         
         console.log('✅ Email sent successfully!');
@@ -460,6 +572,12 @@ app.post('/api/test-email', async (req, res) => {
         let testSenderEmail;
         if (isResendService()) {
             testSenderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+            
+            // Warn if using default onboarding email
+            if (!process.env.RESEND_FROM_EMAIL || testSenderEmail === 'onboarding@resend.dev') {
+                console.log('⚠️  Using default Resend email for test');
+                console.log('💡 Set RESEND_FROM_EMAIL=noreply@pcjohncorp.com to use your verified domain');
+            }
         } else {
             testSenderEmail = process.env.EMAIL_USER;
         }

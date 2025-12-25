@@ -29,7 +29,7 @@ backend/
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/pcjohncorp-backend.git
+   git clone https://github.com/charlsmaxx/pcjohncorp-backend.git
    cd pcjohncorp-backend
    ```
 
@@ -209,6 +209,13 @@ Copyright © 2025 PcJohncorp. All rights reserved.
 ---
 
 Built with ❤️ for PcJohncorp
+
+
+
+
+
+
+
 
 
 

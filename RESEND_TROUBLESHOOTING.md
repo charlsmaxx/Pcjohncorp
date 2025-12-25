@@ -13,11 +13,13 @@ Go to Render Dashboard → Your Service → Environment tab and verify:
 EMAIL_SERVICE=resend
 RESEND_API_KEY=re_your_api_key_here
 RECEIVING_EMAIL=pcjohncorp998@gmail.com
+RESEND_FROM_EMAIL=noreply@pcjohncorp.com
 ```
 
 **Make sure:**
 - ✅ `EMAIL_SERVICE` is set to exactly `resend` (lowercase, no quotes, no spaces)
 - ✅ `RESEND_API_KEY` starts with `re_` and is your full API key
+- ✅ `RESEND_FROM_EMAIL` is set to your verified domain email (e.g., `noreply@pcjohncorp.com`)
 - ✅ No old Gmail variables are present (`EMAIL_USER`, `EMAIL_PASS`, `SMTP_PORT`, `SMTP_HOST`)
 
 ### 2. Check Server Logs
@@ -31,6 +33,8 @@ After deployment, check Render logs for:
    RESEND_API_KEY=***abcd
 ✅ Resend email service configured
 📬 Receiving emails at: pcjohncorp998@gmail.com
+📧 Sending emails from: noreply@pcjohncorp.com
+✅ Using verified domain email
 🔌 Using Resend SMTP: smtp.resend.com:465
 ⚠️  Note: Connection verification skipped for Resend (will verify on first send)
 ```
@@ -69,6 +73,30 @@ RESEND_API_KEY=NOT SET ❌  ← API key missing!
 2. Keep only Resend variables
 3. Redeploy
 
+#### Issue: Domain not verified or RESEND_FROM_EMAIL not set
+**Symptom:** 
+- Logs show: `⚠️  Using default Resend email (onboarding@resend.dev)`
+- Emails fail to send or only work for account owner email
+- Error: "Testing emails only" or "Domain not verified"
+
+**Solution:**
+1. **Verify domain in Resend:**
+   - Go to https://resend.com/domains
+   - Add domain `pcjohncorp.com`
+   - Add DNS records to Namecheap (see RESEND_DOMAIN_VERIFICATION.md)
+   - Wait for verification (15-30 minutes)
+
+2. **Set RESEND_FROM_EMAIL in Render:**
+   - Go to Render → Environment
+   - Add: `RESEND_FROM_EMAIL=noreply@pcjohncorp.com`
+   - Save and redeploy
+
+3. **Verify in logs:**
+   - Should see: `✅ Using verified domain email: noreply@pcjohncorp.com`
+   - Should NOT see: `⚠️  Using default Resend email`
+
+**📖 See RESEND_DOMAIN_VERIFICATION.md for complete domain setup guide**
+
 ### 4. Test the Configuration
 
 After fixing environment variables:
@@ -106,7 +134,32 @@ After fixing environment variables:
 1. **Double-check all environment variables** - case-sensitive, no quotes, no spaces
 2. **Check Render logs** - look for the "📧 Email Service Configuration" section
 3. **Verify code is deployed** - make sure latest code is pushed to GitHub and deployed
-4. **Test locally first** - set up Resend in local `.env` to verify it works
+4. **Verify domain is set up** - check RESEND_DOMAIN_VERIFICATION.md for domain verification steps
+5. **Check Resend dashboard** - verify domain status and email logs
+6. **Test locally first** - set up Resend in local `.env` to verify it works
+
+## Domain-Specific Issues
+
+If you've moved your domain to `pcjohncorp.com` and emails are still failing:
+
+1. **Verify domain in Resend:**
+   - Domain must be verified in Resend dashboard
+   - DNS records must be added to Namecheap
+   - See RESEND_DOMAIN_VERIFICATION.md for detailed steps
+
+2. **Set RESEND_FROM_EMAIL:**
+   - Must use email from verified domain
+   - Format: `noreply@pcjohncorp.com` (or `contact@pcjohncorp.com`, etc.)
+   - Set in Render environment variables
+
+3. **Check server logs:**
+   - Should show: `✅ Using verified domain email: noreply@pcjohncorp.com`
+   - If you see: `⚠️  Using default Resend email` - domain is not configured
+
+4. **Common domain errors:**
+   - "Domain not verified" → Verify domain in Resend and add DNS records
+   - "Testing emails only" → Set RESEND_FROM_EMAIL to verified domain email
+   - "Invalid sender" → Make sure RESEND_FROM_EMAIL uses your verified domain
 
 ---
 
@@ -115,7 +168,13 @@ After fixing environment variables:
 - [ ] `EMAIL_SERVICE=resend` is set in Render
 - [ ] `RESEND_API_KEY` is set with your full API key
 - [ ] `RECEIVING_EMAIL` is set
+- [ ] `RESEND_FROM_EMAIL` is set to your verified domain email (e.g., `noreply@pcjohncorp.com`)
+- [ ] Domain `pcjohncorp.com` is verified in Resend dashboard
+- [ ] DNS records are added to Namecheap for Resend
 - [ ] Old Gmail variables (`EMAIL_USER`, `EMAIL_PASS`) are removed
 - [ ] Code is deployed (check GitHub commit and Render deployment)
 - [ ] Server logs show "✅ Resend email service configured"
+- [ ] Server logs show "✅ Using verified domain email"
 - [ ] No connection timeout errors on startup
+- [ ] Contact form sends emails successfully
+- [ ] Emails arrive at receiving email address
