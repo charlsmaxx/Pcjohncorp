@@ -21,37 +21,50 @@ const allowedOrigins = [
     process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
 
+// Log allowed origins on startup
+console.log('\n🌐 CORS Configuration:');
+console.log('   Allowed origins:', allowedOrigins);
+console.log('');
+
+// CORS middleware with explicit handling
 app.use(cors({
     origin: function (origin, callback) {
+        console.log('🔍 CORS check - Origin received:', origin || '(no origin)');
+        
         // Allow requests with no origin (mobile apps, Postman, etc.)
-        if (!origin) return callback(null, true);
+        if (!origin) {
+            console.log('✅ CORS: Allowing request with no origin');
+            return callback(null, true);
+        }
+        
+        // Normalize origin (remove trailing slash)
+        const normalizedOrigin = origin.replace(/\/$/, '');
         
         // Check for exact match or starts with (for subdomains)
         const isAllowed = allowedOrigins.some(allowed => {
-            return origin === allowed || origin.startsWith(allowed);
+            const normalizedAllowed = allowed.replace(/\/$/, '');
+            return normalizedOrigin === normalizedAllowed || normalizedOrigin.startsWith(normalizedAllowed);
         });
         
         if (isAllowed) {
+            console.log('✅ CORS: Allowing origin:', normalizedOrigin);
             callback(null, true);
         } else {
             // Log for debugging
-            console.log('CORS blocked origin:', origin);
-            console.log('Allowed origins:', allowedOrigins);
+            console.log('❌ CORS: Blocked origin:', normalizedOrigin);
+            console.log('   Allowed origins:', allowedOrigins);
             
-            // In production, you might want to be stricter
-            if (process.env.NODE_ENV === 'production') {
-                // For now, allow all in production to debug - we'll tighten this later
-                console.log('⚠️  CORS: Allowing origin in production for debugging:', origin);
-                callback(null, true);
-            } else {
-                callback(null, true); // Allow in development
-            }
+            // Temporarily allow all in production to get it working
+            console.log('⚠️  CORS: Temporarily allowing origin for debugging');
+            callback(null, true);
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    exposedHeaders: ['Content-Type'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
