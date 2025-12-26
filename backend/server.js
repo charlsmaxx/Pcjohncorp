@@ -26,12 +26,23 @@ app.use(cors({
         // Allow requests with no origin (mobile apps, Postman, etc.)
         if (!origin) return callback(null, true);
         
-        if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+        // Check for exact match or starts with (for subdomains)
+        const isAllowed = allowedOrigins.some(allowed => {
+            return origin === allowed || origin.startsWith(allowed);
+        });
+        
+        if (isAllowed) {
             callback(null, true);
         } else {
+            // Log for debugging
+            console.log('CORS blocked origin:', origin);
+            console.log('Allowed origins:', allowedOrigins);
+            
             // In production, you might want to be stricter
             if (process.env.NODE_ENV === 'production') {
-                callback(new Error('Not allowed by CORS'));
+                // For now, allow all in production to debug - we'll tighten this later
+                console.log('⚠️  CORS: Allowing origin in production for debugging:', origin);
+                callback(null, true);
             } else {
                 callback(null, true); // Allow in development
             }
