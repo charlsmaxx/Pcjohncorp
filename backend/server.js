@@ -17,6 +17,7 @@ const allowedOrigins = [
     'https://charlsmaxx.github.io',
     'https://stately-rabanadas-726bf5.netlify.app',
     'https://pcjohncorp.com',
+    'https://www.pcjohncorp.com',
     process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined values
 
