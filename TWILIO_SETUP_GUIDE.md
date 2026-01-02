@@ -53,11 +53,15 @@ With Twilio integration, visitors can click "Request a Call" on your contact for
 
 ## Step 4: Configure Your Business Phone Number
 
-You need to set your actual business phone number where calls will be forwarded.
+You need to set the phone number where calls will be forwarded (where you'll answer).
 
-**Your business phone**: `+1 (845) 404-1285`
+**For Testing**: Use your **verified phone number** (the one you used to sign up for Twilio). This is the phone number you verified during Twilio account setup.
 
-Format it as: `+18454041285` (no spaces, dashes, or parentheses)
+**For Production**: Use your actual business phone number where you want to receive customer calls.
+
+**Example**: If your business phone is `+1 (845) 404-1285`, format it as: `+18454041285` (no spaces, dashes, or parentheses)
+
+**Note**: The verified phone number is fine for testing. Once you're ready for production, change it to your business phone number.
 
 ---
 
@@ -79,8 +83,10 @@ BACKEND_URL=https://pcjohncorp-backend.onrender.com
 **Important**:
 - Replace `ACyour_account_sid_here` with your actual Account SID
 - Replace `your_auth_token_here` with your actual Auth Token
-- Replace `+1XXXXXXXXXX` with your Twilio phone number
-- Replace `+18454041285` with your business phone (formatted as shown)
+- Replace `+1XXXXXXXXXX` with your Twilio phone number (the one you bought from Twilio)
+- Replace `+18454041285` with:
+  - **For Testing**: Your verified phone number (the one you used to sign up)
+  - **For Production**: Your business phone number (formatted as shown, no spaces/dashes)
 
 5. **Click "Save Changes"**
 6. **Wait for Render to redeploy** (2-3 minutes)
