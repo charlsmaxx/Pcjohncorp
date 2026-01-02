@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - PcJohncorp</title>
+    <link rel="icon" type="image/png" href="Images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Admin Page Specific Styles */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .admin-page-container {
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            margin: 20px auto;
+        }
+
+        .admin-page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-page-header h1 {
+            color: #6B46C1;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .admin-page-header p {
+            color: #6B7280;
+            font-size: 16px;
+        }
+
+        .back-to-site {
+            display: inline-block;
+            margin-top: 20px;
+            color: #6B46C1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-site:hover {
+            color: #5B21B6;
+            text-decoration: underline;
+        }
+
+        /* Override modal styles for admin page */
+        .admin-page-container .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-page-container .modal-content {
+            background-color: #FFFFFF;
+            margin: 0;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .admin-page-container .admin-panel {
+            max-width: 800px;
+        }
+
+        /* Show admin panel directly (not as modal) when logged in */
+        #adminPanelDirect {
+            display: none;
+        }
+
+        #adminPanelDirect.show {
+            display: block;
+        }
+
+        #adminLoginDirect {
+            display: block;
+        }
+
+        #adminLoginDirect.hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-page-container">
+        <!-- Admin Page Header -->
+        <div class="admin-page-header">
+            <h1>🔐 Admin Panel</h1>
+            <p>PcJohncorp - Bulk Call Management</p>
+            <a href="/" class="back-to-site">← Back to Website</a>
+        </div>
+
+        <!-- Admin Login (shown when not logged in) -->
+        <div id="adminLoginDirect">
+            <div class="modal-content" style="margin: 0 auto;">
+                <h2 style="color: #6B46C1; margin-bottom: 20px; text-align: center;">Admin Login</h2>
+                <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="adminEmail" style="display: block; margin-bottom: 5px; color: #1F2937; font-weight: 500;">Email</label>
+                        <input type="email" id="adminEmail" name="email" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="adminPassword" style="display: block; margin-bottom: 5px; color: #1F2937; font-weight: 500;">Password</label>
+                        <input type="password" id="adminPassword" name="password" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    </div>
+                    <div id="adminLoginMessage" class="form-message" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 5px;"></div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; background: #6B46C1; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s ease;">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Admin Panel (shown when logged in) -->
+        <div id="adminPanelDirect" class="admin-panel">
+            <div class="admin-header">
+                <h2>Admin Panel - Bulk Call</h2>
+                <button type="button" class="btn-secondary btn-logout" onclick="logoutAdmin()">Logout</button>
+            </div>
+            <div class="admin-add-number">
+                <h3>Add New Phone Number</h3>
+                <div class="add-number-form">
+                    <input type="text" id="newPhoneNumber" placeholder="+1234567890" class="phone-input">
+                    <button type="button" class="btn-primary" onclick="addPhoneNumber()">Add Number</button>
+                </div>
+                <div id="addNumberMessage" class="form-message"></div>
+            </div>
+            <div id="adminStatus" class="admin-status"></div>
+            <div class="phone-list-container">
+                <div class="phone-list-header">
+                    <h3>Phone Numbers</h3>
+                    <div class="phone-list-controls">
+                        <div class="phone-list-controls-left">
+                            <button type="button" class="btn-secondary btn-small" onclick="selectAllNumbers()">Select All</button>
+                            <button type="button" class="btn-secondary btn-small" onclick="deselectAllNumbers()">Deselect All</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="phoneList" class="phone-list">
+                    <!-- Phone numbers will be loaded here -->
+                </div>
+                <div class="phone-list-footer">
+                    <button type="button" class="btn-primary btn-small" id="callSelectedBtn" onclick="callSelectedNumbers()">📞 Call Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
+

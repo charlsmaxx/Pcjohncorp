@@ -1,0 +1,6 @@
+# Netlify redirects file
+# This allows /admin to work as a URL route
+
+/admin    /admin.html    200
+
+

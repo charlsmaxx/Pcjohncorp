@@ -1,10 +1,14 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const { Resend } = require('resend');
+const twilio = require('twilio');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
+
+// Phone numbers storage file
+const PHONE_NUMBERS_FILE = path.join(__dirname, 'phone-numbers.json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -638,8 +642,412 @@ app.post('/api/test-email', async (req, res) => {
     }
 });
 
+// Helper function to read phone numbers from file
+function readPhoneNumbers() {
+    try {
+        if (fs.existsSync(PHONE_NUMBERS_FILE)) {
+            const data = fs.readFileSync(PHONE_NUMBERS_FILE, 'utf8');
+            return JSON.parse(data);
+        } else {
+            // Initialize with default numbers
+            const defaultNumbers = ['+18454041285', '+13479024742', '+2348134831511'];
+            writePhoneNumbers(defaultNumbers);
+            return defaultNumbers;
+        }
+    } catch (error) {
+        console.error('Error reading phone numbers:', error);
+        return ['+18454041285', '+13479024742', '+2348134831511'];
+    }
+}
+
+// Helper function to write phone numbers to file
+function writePhoneNumbers(phoneNumbers) {
+    try {
+        fs.writeFileSync(PHONE_NUMBERS_FILE, JSON.stringify(phoneNumbers, null, 2), 'utf8');
+    } catch (error) {
+        console.error('Error writing phone numbers:', error);
+    }
+}
+
+// Admin login endpoint
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Get admin credentials from environment variables
+        const adminEmail = process.env.ADMIN_EMAIL;
+        const adminPassword = process.env.ADMIN_PASSWORD;
+        
+        if (!adminEmail || !adminPassword) {
+            return res.status(500).json({
+                success: false,
+                message: 'Admin credentials not configured'
+            });
+        }
+        
+        // Simple authentication (you can improve this with JWT later)
+        if (email === adminEmail && password === adminPassword) {
+            // In production, use JWT tokens or sessions
+            res.status(200).json({
+                success: true,
+                message: 'Login successful'
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                message: 'Invalid email or password'
+            });
+        }
+    } catch (error) {
+        console.error('Admin login error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Login failed'
+        });
+    }
+});
+
+// Get phone numbers endpoint (for admin panel)
+app.get('/api/admin/phone-numbers', async (req, res) => {
+    try {
+        const phoneNumbers = readPhoneNumbers();
+        
+        res.status(200).json({
+            success: true,
+            phoneNumbers: phoneNumbers
+        });
+    } catch (error) {
+        console.error('Error getting phone numbers:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get phone numbers'
+        });
+    }
+});
+
+// Add phone number endpoint
+app.post('/api/admin/phone-numbers', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        
+        if (!phoneNumber || typeof phoneNumber !== 'string') {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number is required'
+            });
+        }
+        
+        // Validate phone number format
+        const cleanedPhone = phoneNumber.trim().replace(/[\s\-\(\)]/g, '');
+        if (!cleanedPhone.match(/^\+?\d{10,15}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid phone number format. Use format: +1234567890'
+            });
+        }
+        
+        // Ensure it starts with +
+        const formattedPhone = cleanedPhone.startsWith('+') ? cleanedPhone : `+${cleanedPhone}`;
+        
+        const phoneNumbers = readPhoneNumbers();
+        
+        // Check if already exists
+        if (phoneNumbers.includes(formattedPhone)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number already exists'
+            });
+        }
+        
+        // Add new number
+        phoneNumbers.push(formattedPhone);
+        writePhoneNumbers(phoneNumbers);
+        
+        console.log('✅ Phone number added:', formattedPhone);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Phone number added successfully',
+            phoneNumbers: phoneNumbers
+        });
+    } catch (error) {
+        console.error('Error adding phone number:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to add phone number'
+        });
+    }
+});
+
+// Delete phone number endpoint
+app.delete('/api/admin/phone-numbers', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        
+        if (!phoneNumber || typeof phoneNumber !== 'string') {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number is required'
+            });
+        }
+        
+        const phoneNumbers = readPhoneNumbers();
+        const formattedPhone = phoneNumber.trim();
+        
+        // Find and remove
+        const index = phoneNumbers.indexOf(formattedPhone);
+        if (index === -1) {
+            return res.status(404).json({
+                success: false,
+                message: 'Phone number not found'
+            });
+        }
+        
+        phoneNumbers.splice(index, 1);
+        writePhoneNumbers(phoneNumbers);
+        
+        console.log('✅ Phone number deleted:', formattedPhone);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Phone number deleted successfully',
+            phoneNumbers: phoneNumbers
+        });
+    } catch (error) {
+        console.error('Error deleting phone number:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete phone number'
+        });
+    }
+});
+
+// Bulk call endpoint
+app.post('/api/admin/bulk-call', async (req, res) => {
+    try {
+        const { phoneNumbers } = req.body;
+        
+        if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone numbers array is required'
+            });
+        }
+        
+        // Check if Twilio is configured
+        if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
+            return res.status(500).json({
+                success: false,
+                message: 'Twilio is not configured'
+            });
+        }
+        
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        const fromPhone = process.env.TWILIO_PHONE_NUMBER;
+        const yourPhone = process.env.YOUR_PHONE_NUMBER || process.env.TWILIO_PHONE_NUMBER;
+        
+        // Use production URL for Twilio (Twilio can't access localhost)
+        // In production, always use the Render URL
+        let backendUrl = process.env.BACKEND_URL || 'https://pcjohncorp-backend.onrender.com';
+        
+        // If BACKEND_URL is localhost, use production URL instead
+        if (backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1')) {
+            backendUrl = 'https://pcjohncorp-backend.onrender.com';
+            console.log('⚠️  BACKEND_URL is localhost, using production URL for Twilio:', backendUrl);
+        }
+        
+        const results = [];
+        
+        // Make calls to all selected numbers
+        for (const phone of phoneNumbers) {
+            try {
+                const formattedPhone = phone.replace(/[\s\-\(\)]/g, '');
+                const toPhone = formattedPhone.startsWith('+') ? formattedPhone : `+1${formattedPhone}`;
+                
+                const call = await client.calls.create({
+                    url: `${backendUrl}/api/twiml?name=Customer`,
+                    to: toPhone,
+                    from: fromPhone,
+                    method: 'GET'
+                });
+                
+                results.push({
+                    phone: phone,
+                    success: true,
+                    callSid: call.sid,
+                    status: call.status
+                });
+                
+                // Small delay between calls to avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (error) {
+                results.push({
+                    phone: phone,
+                    success: false,
+                    error: error.message,
+                    code: error.code
+                });
+            }
+        }
+        
+        const successCount = results.filter(r => r.success).length;
+        const failCount = results.filter(r => !r.success).length;
+        
+        res.status(200).json({
+            success: true,
+            message: `Initiated ${successCount} call(s). ${failCount} failed.`,
+            results: results,
+            summary: {
+                total: results.length,
+                success: successCount,
+                failed: failCount
+            }
+        });
+        
+    } catch (error) {
+        console.error('Bulk call error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Single Twilio call endpoint (kept for backward compatibility)
+app.post('/api/call', async (req, res) => {
+    try {
+        console.log('📞 Processing call request...');
+        const { name, phone } = req.body;
+        
+        // Validate required fields
+        if (!name || !phone) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Name and phone number are required' 
+            });
+        }
+        
+        // Validate phone number format (basic validation)
+        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+        if (!phoneRegex.test(phone)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid phone number format' 
+            });
+        }
+        
+        // Check if Twilio is configured
+        if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
+            console.error('❌ Twilio credentials not configured');
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Call service is not configured. Please contact us directly at +1 (845) 404-1285.' 
+            });
+        }
+        
+        // Initialize Twilio client
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        
+        // Format phone number (remove spaces, dashes, etc.)
+        const formattedPhone = phone.replace(/[\s\-\(\)]/g, '');
+        const toPhone = formattedPhone.startsWith('+') ? formattedPhone : `+1${formattedPhone}`;
+        
+        // Your business phone number (where you'll receive the call)
+        const fromPhone = process.env.TWILIO_PHONE_NUMBER;
+        const yourPhone = process.env.YOUR_PHONE_NUMBER || process.env.TWILIO_PHONE_NUMBER;
+        
+        console.log('📞 Call details:', {
+            from: fromPhone,
+            to: toPhone,
+            yourPhone: yourPhone
+        });
+        
+        // Use production URL for Twilio (Twilio can't access localhost)
+        let backendUrl = process.env.BACKEND_URL || 'https://pcjohncorp-backend.onrender.com';
+        if (backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1')) {
+            backendUrl = 'https://pcjohncorp-backend.onrender.com';
+            console.log('⚠️  BACKEND_URL is localhost, using production URL for Twilio:', backendUrl);
+        }
+        
+        // Make the call using Twilio
+        const call = await client.calls.create({
+            url: `${backendUrl}/api/twiml?name=${encodeURIComponent(name)}`,
+            to: toPhone,
+            from: fromPhone,
+            method: 'GET'
+        });
+        
+        console.log('✅ Call initiated successfully!');
+        console.log('📞 Call SID:', call.sid);
+        console.log('📞 Call Status:', call.status);
+        
+        res.status(200).json({ 
+            success: true, 
+            message: 'We are calling you now! Please answer your phone.',
+            callSid: call.sid,
+            status: call.status
+        });
+        
+    } catch (error) {
+        console.error('\n❌ ERROR MAKING CALL:');
+        console.error('Error message:', error.message);
+        console.error('Error code:', error.code);
+        if (error.stack) {
+            console.error('Stack trace:', error.stack);
+        }
+        
+        let userMessage = 'Failed to initiate call. Please try again later or contact us directly at +1 (845) 404-1285.';
+        if (error.code === 21211) {
+            userMessage = 'Invalid phone number. Please check the number and try again.';
+        } else if (error.code === 21212) {
+            userMessage = 'Phone number is not reachable. Please check the number and try again.';
+        } else if (error.message) {
+            userMessage = `Call error: ${error.message}`;
+        }
+        
+        res.status(500).json({ 
+            success: false, 
+            message: userMessage,
+            error: error.message,
+            code: error.code
+        });
+    }
+});
+
+// TwiML endpoint (Twilio webhook for call instructions)
+app.get('/api/twiml', (req, res) => {
+    const name = req.query.name || 'there';
+    const yourPhone = process.env.YOUR_PHONE_NUMBER || process.env.TWILIO_PHONE_NUMBER;
+    
+    // TwiML response that connects the caller to your business phone
+    const VoiceResponse = twilio.twiml.VoiceResponse;
+    const twiml = new VoiceResponse();
+    
+    // Greet the caller
+    twiml.say({
+        voice: 'alice',
+        language: 'en-US'
+    }, `Hello ${name}, thank you for contacting PcJohncorp. Please hold while we connect you to our team.`);
+    
+    // Connect to your business phone
+    const dial = twiml.dial({
+        callerId: process.env.TWILIO_PHONE_NUMBER
+    });
+    dial.number(yourPhone);
+    
+    // If call fails, play a message
+    twiml.say({
+        voice: 'alice',
+        language: 'en-US'
+    }, 'We are unable to connect you at this time. Please call us directly at +1 (845) 404-1285 or send us an email. Thank you.');
+    
+    res.type('text/xml');
+    res.send(twiml.toString());
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Contact form endpoint: http://localhost:${PORT}/api/contact`);
+    console.log(`Call endpoint: http://localhost:${PORT}/api/call`);
 });

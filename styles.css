@@ -886,6 +886,7 @@ body {
     font-style: italic;
 }
 
+
 .btn-secondary {
     background: var(--white);
     color: var(--primary-purple);
@@ -1198,7 +1199,21 @@ body {
     background: var(--primary-purple);
 }
 
-.footer-copyright {
+    .footer-copyright-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .footer-copyright-wrapper {
+            flex-direction: column;
+            gap: 15px;
+        }
+    }
+
+    .footer-copyright {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.7);
 }
@@ -1441,6 +1456,440 @@ body {
         font-size: 16px;
     }
 
+    /* Admin Button - Fixed on large screens, in footer on small screens */
+    .admin-btn {
+        color: var(--white);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: var(--shadow-lg);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-btn:hover {
+        background: var(--dark-purple);
+        transform: scale(1.1);
+    }
+
+    /* Fixed position on large screens only */
+    @media (min-width: 769px) {
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    }
+
+    /* In footer on small screens */
+    @media (max-width: 768px) {
+        .admin-btn {
+            position: static;
+            margin-left: auto;
+        }
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: var(--white);
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .modal-content.admin-panel {
+        max-width: 800px;
+    }
+
+    /* Center modal content on large screens */
+    @media (min-width: 769px) {
+        .modal-content {
+            align-items: center;
+            text-align: center;
+        }
+
+        .modal-content form {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .modal-content .form-group {
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .modal-content .form-group label {
+            text-align: left;
+        }
+
+        .modal-content .form-group input {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            width: 100%;
+            margin: 0 auto 20px;
+        }
+
+        .admin-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-controls {
+            justify-content: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .phone-list-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .phone-list-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .phone-list-header h3 {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .phone-list-controls {
+            justify-content: center !important;
+            width: 100%;
+        }
+
+        .phone-list-footer {
+            margin-top: 15px;
+        }
+
+        .phone-list-footer .btn-primary {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .phone-list-container h3 {
+            text-align: center;
+            width: 100%;
+        }
+
+        .admin-status {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        #adminLoginMessage {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .admin-add-number {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .admin-add-number h3 {
+            text-align: center;
+        }
+
+        .add-number-form {
+            justify-content: center;
+        }
+    }
+
+    .close {
+        color: var(--text-light);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+    }
+
+    .close:hover {
+        color: var(--text-dark);
+    }
+
+    .modal-content h2 {
+        margin-bottom: 20px;
+        color: var(--primary-purple);
+    }
+
+    .modal-content .form-group {
+        margin-bottom: 20px;
+    }
+
+    .modal-content .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .modal-content .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    /* Admin Panel Styles */
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid var(--gray-light);
+    }
+
+    .admin-header h2 {
+        margin: 0;
+    }
+
+    .btn-logout {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .admin-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .admin-controls button {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .admin-status {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .admin-status.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .admin-status.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .admin-status.warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .admin-status.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .phone-list-container {
+        margin-top: 20px;
+    }
+
+    .phone-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 5px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .phone-list-header h3 {
+        margin: 0;
+        color: var(--text-dark);
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .phone-list-controls {
+        display: flex !important;
+        gap: 8px;
+        flex-wrap: nowrap !important;
+        align-items: flex-start;
+        justify-content: space-between !important;
+        width: 100% !important;
+        max-width: 600px !important;
+    }
+
+    .phone-list-controls-left {
+        display: flex;
+        gap: 8px;
+    }
+
+    .phone-list-controls-right {
+        display: flex !important;
+        gap: 8px;
+        margin-left: auto !important;
+    }
+
+    .btn-small {
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .phone-list-container h3 {
+        margin-bottom: 15px;
+        color: var(--text-dark);
+    }
+
+    .phone-list {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 5px !important;
+        margin-bottom: 15px;
+    }
+
+    .phone-list-footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .phone-list-footer .btn-primary {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .phone-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        gap: 10px;
+    }
+
+    .phone-item:last-child {
+        border-bottom: none;
+    }
+
+    .phone-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .phone-item label {
+        cursor: pointer;
+        flex: 1;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: var(--white);
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-delete:hover {
+        background: #c82333;
+        transform: scale(1.05);
+    }
+
+    .admin-add-number {
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: var(--gray-light);
+        border-radius: 5px;
+    }
+
+    .admin-add-number h3 {
+        margin-bottom: 15px;
+        color: var(--text-dark);
+    }
+
+    .add-number-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .phone-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .add-number-form .btn-primary {
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+
     .header {
         padding: 15px 0;
     }
@@ -1541,6 +1990,11 @@ body {
         flex-direction: column;
         gap: 20px;
         text-align: center;
+    }
+
+    .footer-copyright-wrapper {
+        flex-direction: column;
+        gap: 15px;
     }
 }
 

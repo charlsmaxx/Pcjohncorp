@@ -34,6 +34,13 @@ build/
 *.temp
 .cache/
 
+# Phone numbers storage
+phone-numbers.json
+
+
+
+
+
 
 
 

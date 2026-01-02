@@ -100,6 +100,7 @@ async function handleFormSubmit(event) {
     }
 }
 
+
 // Show form message
 function showFormMessage(message, type) {
     const messageDiv = document.getElementById('form-message');
